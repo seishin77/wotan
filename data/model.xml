@@ -1,0 +1,38 @@
+<?xml version = "1.0" encoding="UTF-8" standalone="yes" ?>
+<wotan>
+	<!-- BDD des questionnaires -->
+	<questionnaires>
+		<questionnaire id="1">
+			<description>description du premier questionnaire</description>
+			<questions>
+
+			</questions>
+		</questionnaire>
+	</questionnaires>
+
+	<!-- BDD de questions -->
+	<questions>
+		<!-- attribut points donne le nombre de points de la question -->
+		<question id="1" points="1">
+			<!-- U reponse unique / M reponses multiples -->
+			<type>U</type>
+			<intitule>Qu'est-ce que le DHCP ?</intitule>
+			<reponses>
+				<reponse id=""></reponse>
+			</reponses>
+			<correction>
+			</correction>
+		</question>
+<!--		
+		<question id="" points="1">
+			<type></type>
+			<intitule></intitule>
+			<reponses>
+				<reponse id=""></reponse>
+			</reponses>
+			<correction>
+			</correction>
+		</question>
+-->
+	</questions>
+<wotan>
