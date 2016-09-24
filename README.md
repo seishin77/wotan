@@ -1,14 +1,7 @@
-<style>
-div.redcenter{
-  text-align:center;
-  color:red;
-  font-weight:bold;
-}
-</style>
 # wotan
 
 ___
-<div class="redcenter">WORK IN PROGRESS</div>
+**WORK IN PROGRESS**
 ___
 a platform for knowledge revision.
 
