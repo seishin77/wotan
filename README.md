@@ -17,7 +17,7 @@ Wotan is the god of victory, knowledge and deads.
 
 1. Visit your site
 2. Configure
-3. Create or not a class
+3. Create or not a student class
 4. Create thematic categories and questions
 5. Invite students
 
