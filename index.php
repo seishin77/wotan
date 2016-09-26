@@ -1,23 +1,39 @@
 <?php
-require_once 'core/core.php';
+session_start();
 
-core::init();
+if(!file_exists('./conf/db.conf') ||
+      isset($_REQUEST['force']) ||
+      (isset($_SESSION['step']) &&
+        isset($_REQUEST['step']) &&
+        $_SESSION['step'] == $_REQUEST['step'])){
 
-$db = dbm::getConnexion();
-
-$db->query('SELECT * FROM user;');
-
-ob_start();
-$db->print_table();
-
-if(isset($_REQUEST['debug'])){
-  echo '<pre>';
-  echo '_REQUEST', PHP_EOL;
-  print_r($_REQUEST);
-  echo '_SERVER', PHP_EOL;
-  print_r($_SERVER);
-  echo '</pre>';
+  if(isset($_REQUEST['force'])){
+    @unlink('conf/db.conf');
+  }
+  require_once 'core/core.php';
+  require_once 'core/tr.php';
+  include 'install.php';
 }
-$content = ob_get_clean();
+else{
+  require_once 'core/system.php';
 
-include 'templates/main.php';
+  core::init();
+
+  $db = dbm::getConnexion();
+  $db->query('SELECT * FROM user;');
+
+  ob_start();
+  $db->print_table();
+
+  if(isset($_REQUEST['debug'])){
+    echo '<pre>';
+    echo '_REQUEST', PHP_EOL;
+    print_r($_REQUEST);
+    echo '_SERVER', PHP_EOL;
+    print_r($_SERVER);
+    echo '</pre>';
+  }
+  $content = ob_get_clean();
+
+  include 'templates/main.php';
+}

@@ -76,7 +76,7 @@ class db{
   }
 
   function connect(){
-    $this->conn = mysqli_connect($this->hostname, $this->user, $this->pass, $this->db) or trigger_error(mysqli_connect_error(),E_USER_ERROR); 
+    $this->conn = @mysqli_connect($this->hostname, $this->user, $this->pass, $this->db) or trigger_error(mysqli_connect_error(),E_USER_ERROR); 
   }
 
   function fetch_array($result_type = MYSQL_ASSOC){

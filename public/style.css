@@ -1,5 +1,15 @@
 body{
-	padding-top: 60px;
-	margin-right:auto;
-	margin-left: auto;
+  padding-top: 60px;
+  margin-right:auto;
+  margin-left: auto;
+}
+
+.navbar-fixed-bottom div.container{
+  color:white;
+  margin:auto;
+}
+
+.navbar-fixed-bottom div.container div{
+  text-align: center;
+  padding-top: 1.5rem;
 }

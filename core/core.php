@@ -1,14 +1,12 @@
 <?php
 
-require_once 'db.php';
-require_once 'tr.php';
-
 class core{
 	public static $ppath='';
 	public static $vpath='';
 
 	public static function init(){
-		self::$ppath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..');
+		self::$ppath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..') .
+							DIRECTORY_SEPARATOR;
 		self::$vpath = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
 	}
 
@@ -25,5 +23,8 @@ class core{
 	}
 	public static function path($p){
 		return self::getPPath() . $p;
+	}
+	public static function basedir($p){
+		return DIRECTORY_SEPARATOR . str_replace(self::getPPath(), '', $p);
 	}
 }
