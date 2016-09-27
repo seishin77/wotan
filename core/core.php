@@ -1,8 +1,14 @@
 <?php
 
 class core{
-	public static $ppath='';
-	public static $vpath='';
+	public static $ppath = '';
+	public static $vpath = '';
+	public static $flash = array('nbflash' => 0,
+																'success' => array(),
+																'info' => array(),
+																'warning' => array(),
+																'danger' => array(),
+															);
 
 	public static function init(){
 		self::$ppath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..') .
@@ -21,10 +27,31 @@ class core{
 	public static function vpath($p){
 		return self::getVPath() . $p;
 	}
+	
 	public static function path($p){
 		return self::getPPath() . $p;
 	}
+	
 	public static function basedir($p){
 		return DIRECTORY_SEPARATOR . str_replace(self::getPPath(), '', $p);
 	}
+
+	public static function getFlash(){
+		return self::$flash;
+	}
+
+	public static function resetFlash(){
+		self::$flash = array('nbflash' => 0,
+													'success' => array(),
+													'info' => array(),
+													'warning' => array(),
+													'danger' => array(),
+													);
+	}
+
+	public static function addFlash($txt, $level='info'){
+		self::$flash['nbflash']++;
+		self::$flash[$level][] = $txt;
+	}
+
 }

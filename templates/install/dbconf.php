@@ -1,6 +1,5 @@
 <!-- begin <?php echo core::basedir(__FILE__);?> -->
-<h1><?php echo tr('STEP'), ' ', $step, ' : ', tr('DATABASE CONFIGURATION');?></h1>
-<form method="post" action="index.php" class="form-horizontal col-lg-6">
+<form method="post" action="index.php" class="form-horizontal col-push-lg-2 col-lg-8">
   <input type="hidden" name="step" value="2" />
   <div class="row">
     <div class="form-group">

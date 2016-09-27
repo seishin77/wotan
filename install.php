@@ -26,11 +26,28 @@ echo core::getVPath(), '<br/>', core::getPPath(),'<br/>', PHP_EOL;
 
 switch($step){
   case 1:
-    include 'templates/install/dbconf.php';    
+    echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr('DATABASE CONFIGURATION'), '</h1>';
+    include 'templates/flash.php';
+    include 'templates/install/dbconf.php';
     break;
   case 2:
-    $status = wotan_config();
+    $status = wotan_dbconf();
     if($status === 0){
+      core::addFlash(tr('DATABASE CREATED'));
+      echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr('MAIL CONFIGURATION'), '</h1>';
+      include 'templates/flash.php';
+      include 'templates/install/mailconf.php';
+    }
+    else{
+      // TODO : ERROR
+    }
+    break;
+  case 3:
+    $status = wotan_mailconf();
+    if($status === 0){
+      core::addFlash(tr('MAIL CONFIGURED'));
+      echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr('ADMINISTRATOR ACCOUNT CREATION'), '</h1>';
+      include 'templates/flash.php';
       include 'templates/admin/create_user.php';
     }
     else{
@@ -39,18 +56,20 @@ switch($step){
       // -2 db.conf error
     }
     break;
-  case 3:
+  case 4:
     $status = wotan_create();
     if($status === 0){
-
+      core::addFlash(tr('ADMINISTRATOR CREATED'));
+      echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr(''), '</h1>';
+      include 'templates/flash.php';
+      include 'templates/install/finish.php';
     }
     else{
       // TODO : ERROR
     }
     break;
-  case 4:
-    
-    // break;
+  case 5:
+    break;
   default:
     echo 'ERROR';    
     break;
@@ -58,13 +77,21 @@ switch($step){
 
 echo '</div>';
 include 'templates/foot.php';
+include 'templates/utils/select_first_form.php';
 
+// TODO
 function wotan_create(){
   include 'sql/create.php';
-  unset($_REQUEST['step']);
+  unset($_SESSION['step']);
+  return 0;
 }
 
-function wotan_config(){
+// TODO
+function wotan_mailconf(){
+  return 0;
+}
+
+function wotan_dbconf(){
   if(!file_exists('conf'))
     mkdir('conf', 0700);
 
