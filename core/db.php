@@ -39,6 +39,7 @@ class db{
   }
 
   function q($sql, $types='', $data=array(), $fog=array(), $file= __FILE__, $line= __LINE__){
+    // var_dump(func_get_args());
     if(!isset(self::$_statements[$sql])){
       self::$_statements[$sql] = mysqli_prepare($this->conn, $sql);
       if(self::$_statements[$sql] === false){

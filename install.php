@@ -66,6 +66,9 @@ switch($step){
     }
     else{
       // TODO : ERROR
+      echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr('ADMINISTRATOR ACCOUNT CREATION'), '</h1>';
+      include 'templates/flash.php';
+      include 'templates/admin/create_user.php';
     }
     break;
   case 5:
@@ -81,8 +84,53 @@ include 'templates/utils/select_first_form.php';
 
 // TODO
 function wotan_create(){
-  include 'sql/create.php';
+
+  $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+  $name  = filter_input(INPUT_POST, 'name',  FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/[a-zA-Z][a-zA-Z0-9]{3,}/')));
+  $pass  = filter_input(INPUT_POST, 'pass',  FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/.{6,}/')));
+  $pass2 = filter_input(INPUT_POST, 'pass2', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/.{6,}/')));
+  
+  if($pass != $pass2){
+    $_SESSION['step'] = 4;
+    core::addFlash(tr('PASSWORDS MUST BE IDENTICAL'), 'danger');
+  }
+  if($name == false){
+    $_SESSION['step'] = 4;
+    core::addFlash(tr('ONLY CHARACTERS AND NUMBERS ARE AUTHORIZED IN LOGIN'), 'danger');
+    core::addFlash(tr('THE LENGTH OF LOGIN MUST BE AT LEAST 4'), 'danger');
+  }
+  if($email == false){
+    $_SESSION['step'] = 4;
+    core::addFlash(tr('EMAIL IS INCORRECT'), 'danger');
+  }
+  if($pass == false ){
+    $_SESSION['step'] = 4;
+    core::addFlash(tr('THE LENGTH OF PASSWORD MUST BE AT LEAST 6'), 'danger');
+  }
+  require_once 'core/db.php';
+  $db = dbm::getConnexion();
+  $db->q('SELECT name, email FROM `user` WHERE name=? OR email=?;', 'ss', array($name, $email));
+  if($db->num_rows() > 0){
+    $_SESSION['step'] = 4;
+    $r = $db->fetch_array();
+    if($r['name'] == $name){
+      core::addFlash(tr('THIS LOGIN IS ALREADY USED'), 'danger');
+    }
+    if($r['email'] == $email){
+      core::addFlash(tr('THIS EMAIL IS ALREADY USED'), 'danger');
+    }
+  }
+  if($_SESSION['step'] == 4)
+    return -1;
   unset($_SESSION['step']);
+  
+  $epass = core::crypt($pass);
+  include 'sql/init.php';
+
+  $params = array(array($name, $email, $epass));
+  array_unshift($params, $queries['insert'][0]['user'][0], $queries['insert'][0]['user'][1]);
+  call_user_func_array(array($db, 'q'), $params);
+
   return 0;
 }
 
@@ -129,11 +177,27 @@ define("PASS","%s");
     $db->q(sprintf('CREATE DATABASE IF NOT EXISTS `%s`;', $_REQUEST['database']));
     
     $db = dbm::getConnexion();
-    include 'sql/create.php';
+    include 'sql/init.php';
 
+    foreach($queries['drop'] as $kk => $vv){
+      foreach($vv as $k => $v)
+        $db->q($v);
+    }
     foreach($queries['create'] as $kk => $vv){
       foreach($vv as $k => $v)
         $db->q($v);
+    }
+
+    foreach($queries['data'] as $kk => $vv){
+      var_dump('vv', $vv);
+      foreach($vv as $k3 => $v3){
+        foreach($v3 as $k => $v){
+          $params = array($v);
+          var_dump(array($kk, $k3, $queries['insert'][$kk][$k3]));
+          array_unshift($params, $queries['insert'][$kk][$k3][0], $queries['insert'][$kk][$k3][1]);
+          call_user_func_array(array($db, 'q'), $params);
+        }
+      }
     }
   }
   return 0;

@@ -54,4 +54,28 @@ class core{
 		self::$flash[$level][] = $txt;
 	}
 
+	public static function salt($l=6){
+		$chars = str_split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/:;!.,?*%$');
+		$n = count($chars);
+		$retour = '';
+
+		for($i=0; $i < $l; $i++)
+			$retour .= $chars[mt_rand(0, $n - 1)];
+
+		return $retour;
+	}
+
+	public static function crypt($p){
+		if(function_exists('password_hash'))
+			return password_hash($p, PASSWORD_BCRYPT);
+
+		return crypt($p);
+	}
+
+	public static function verify($p, $h){
+		if(function_exists('password_hash'))
+			return password_verify($p, $h);
+
+		return hash_equals($h, crypt($p, $h));
+	}
 }
