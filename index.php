@@ -9,6 +9,7 @@ if(!file_exists('./conf/db.conf') ||
 
   if(isset($_REQUEST['force'])){
     @unlink('conf/db.conf');
+    @unlink('conf/mail.conf');
   }
   require_once 'core/core.php';
   require_once 'core/tr.php';

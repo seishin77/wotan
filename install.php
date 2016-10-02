@@ -29,6 +29,7 @@ switch($step){
     echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr('DATABASE CONFIGURATION'), '</h1>';
     include 'templates/flash.php';
     include 'templates/install/dbconf.php';
+    //echo '<pre>', print_r($GLOBALS, true), '</pre>';
     break;
   case 2:
     $status = wotan_dbconf();
@@ -39,7 +40,23 @@ switch($step){
       include 'templates/install/mailconf.php';
     }
     else{
-      // TODO : ERROR
+      switch($status){
+        // -1 .htaccess error
+        case -1:
+          core::addFlash(tr('HTACCESS CREATION ERROR'), 'danger');
+          break;
+        // -2 db.conf error
+        case -2:
+          core::addFlash(tr('DB CONFIGURATION ERROR'), 'danger');
+          break;
+        // -3 sql error
+        case -3:
+          core::addFlash(tr('SQL ERROR'), 'danger');
+          break;
+      }
+      echo '<h1>', tr('STEP'), ' ', $step - 1, ' : ', tr('DATABASE CONFIGURATION'), '</h1>';
+      include 'templates/flash.php';
+      include 'templates/install/dbconf.php';
     }
     break;
   case 3:
@@ -51,9 +68,20 @@ switch($step){
       include 'templates/admin/create_user.php';
     }
     else{
-      // TODO : ERROR
-      // -1 .htaccess error
-      // -2 db.conf error
+      switch($status){
+        case -1:
+          core::addFlash(tr('INVALID TYPE CONFIGURATION'), 'danger');
+          break;
+        case -2:
+          core::addFlash(tr('INVALID PARAMETER'), 'danger');
+          break;
+        case -3:
+          core::addFlash(tr('FILE CREATION ERROR'), 'danger');
+          break;
+      }
+      echo '<h1>', tr('STEP'), ' ', $step - 1, ' : ', tr('MAIL CONFIGURATION'), '</h1>';
+      include 'templates/flash.php';
+      include 'templates/install/mailconf.php';
     }
     break;
   case 4:
@@ -65,8 +93,8 @@ switch($step){
       include 'templates/install/finish.php';
     }
     else{
-      // TODO : ERROR
-      echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr('ADMINISTRATOR ACCOUNT CREATION'), '</h1>';
+      core::addFlash(tr('ADMINISTRATOR CREATION ERROR'));
+      echo '<h1>', tr('STEP'), ' ', $step - 1, ' : ', tr('ADMINISTRATOR ACCOUNT CREATION'), '</h1>';
       include 'templates/flash.php';
       include 'templates/admin/create_user.php';
     }
@@ -74,7 +102,8 @@ switch($step){
   case 5:
     break;
   default:
-    echo 'ERROR';    
+    $content = tr('UNKNOWN INSTALLATION STEP');
+    include 'templates/error.php';
     break;
 }
 
@@ -82,14 +111,12 @@ echo '</div>';
 include 'templates/foot.php';
 include 'templates/utils/select_first_form.php';
 
-// TODO
 function wotan_create(){
-
   $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
   $name  = filter_input(INPUT_POST, 'name',  FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/[a-zA-Z][a-zA-Z0-9]{3,}/')));
   $pass  = filter_input(INPUT_POST, 'pass',  FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/.{6,}/')));
   $pass2 = filter_input(INPUT_POST, 'pass2', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/.{6,}/')));
-  
+
   if($pass != $pass2){
     $_SESSION['step'] = 4;
     core::addFlash(tr('PASSWORDS MUST BE IDENTICAL'), 'danger');
@@ -123,19 +150,66 @@ function wotan_create(){
   if($_SESSION['step'] == 4)
     return -1;
   unset($_SESSION['step']);
-  
+
   $epass = core::crypt($pass);
   include 'sql/init.php';
 
-  $params = array(array($name, $email, $epass));
+  $params = array(array($name, $email, $epass, 'ADMINISTRATOR'));
   array_unshift($params, $queries['insert'][0]['user'][0], $queries['insert'][0]['user'][1]);
   call_user_func_array(array($db, 'q'), $params);
 
+  include 'core/mail.php';
+  $msg =  sprintf('Hi %s,<br/><br/>Now, you are an administrator of %s', $name, '');
+  mail::mail($email, tr('ADMINISTRATOR OF WOTAN SITE'), $msg);
   return 0;
 }
 
-// TODO
 function wotan_mailconf(){
+  $type  = filter_input(INPUT_POST, 'type', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/(?:PHP)|(?:SMTP)/')));
+  $smtp  = filter_input(INPUT_POST, 'host', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/[a-zA-Z0-9][a-zA-Z0-9_-]+/')));
+  $port  = filter_input(INPUT_POST, 'port', FILTER_VALIDATE_INT);
+  $email = filter_input(INPUT_POST, 'user', FILTER_VALIDATE_EMAIL);
+  $pass  = filter_input(INPUT_POST, 'pass',  FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/.{6,}/')));
+  $pass2 = filter_input(INPUT_POST, 'pass2', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/.{6,}/')));
+
+  if($type === false){
+    return -3;
+  }
+  if($type == 'SMTP'){
+    if($smtp === false || $port === false || $email === false || $pass === false || $pass != $pass2)
+      return -2;
+  }
+
+  if(!file_exists('conf/mail.conf')){
+    $fd = fopen('conf/mail.conf', 'w');
+    if($fd === false){
+      return -1;
+    }
+    else{
+      if($type == 'SMTP')
+        fputs($fd, sprintf('<?php
+define("SMTPTYPE","%s");
+define("SMTP","%s");
+define("SMTPPORT", "%s");
+define("EMAILNAME","WOTAN");
+define("EMAIL","%s");
+define("EMAILPASS","%s");
+', $type, $smtp, $port, $email, $pass));
+      else
+        fputs($fd, sprintf('<?php
+define("SMTPTYPE","%s");
+', $type));
+      fclose($fd);
+    }
+  }
+  require_once 'core/mail.php';
+  mailer::init();
+
+  if(mailer::mail('ykohler@gmail.com', 'Test é WOTAN', 'Test ' . date('Y-m-d H:i:s')))
+    core::addFlash(tr('MAIL SENT'));
+  else
+    core::addFlash(tr('MAIL UNSENT'));
+
   return 0;
 }
 
@@ -172,32 +246,57 @@ define("USER","%s");
 define("PASS","%s");
 ', $_REQUEST['host'], $_REQUEST['database'], $_REQUEST['user'], $_REQUEST['password']));
     fclose($fd);
-    require_once 'core/db.php';
-    $db = new db($_REQUEST['host'], '', $_REQUEST['user'], $_REQUEST['password']);
-    $db->q(sprintf('CREATE DATABASE IF NOT EXISTS `%s`;', $_REQUEST['database']));
-    
-    $db = dbm::getConnexion();
-    include 'sql/init.php';
+    try{
+      require_once 'core/db.php';
+      $db = new db($_REQUEST['host'], '', $_REQUEST['user'], $_REQUEST['password']);
+      $db->q(sprintf('CREATE DATABASE IF NOT EXISTS `%s`;', $_REQUEST['database']));
 
-    foreach($queries['drop'] as $kk => $vv){
-      foreach($vv as $k => $v)
-        $db->q($v);
-    }
-    foreach($queries['create'] as $kk => $vv){
-      foreach($vv as $k => $v)
-        $db->q($v);
-    }
+      $db = dbm::getConnexion();
+      include 'sql/init.php';
 
-    foreach($queries['data'] as $kk => $vv){
-      var_dump('vv', $vv);
-      foreach($vv as $k3 => $v3){
-        foreach($v3 as $k => $v){
-          $params = array($v);
-          var_dump(array($kk, $k3, $queries['insert'][$kk][$k3]));
-          array_unshift($params, $queries['insert'][$kk][$k3][0], $queries['insert'][$kk][$k3][1]);
-          call_user_func_array(array($db, 'q'), $params);
+      foreach($queries['drop'] as $kk => $vv){
+        foreach($vv as $k => $v)
+          $db->q($v);
+      }
+      foreach($queries['create'] as $kk => $vv){
+        foreach($vv as $k => $v)
+          $db->q($v);
+      }
+
+      foreach($queries['data'] as $kk => $vv){
+        foreach($vv as $k3 => $v3){
+          foreach($v3 as $k => $v){
+            if($k == 'file'){
+              if(!is_array($v))
+                $files = array($v);
+              else
+                $files = $v;
+              foreach($files as $val){
+                $fd = fopen($val, 'r');
+
+                if($fd === false)
+                  throw new Exception();
+
+                while(($data = fgetcsv($fd)) !== false){
+                  $params = array($data);
+                  array_unshift($params, $queries['insert'][$kk][$k3][0], $queries['insert'][$kk][$k3][1]);
+                  call_user_func_array(array($db, 'q'), $params);
+                }
+
+                fclose($fd);
+              }
+            }
+            else {
+              $params = array($v);
+              array_unshift($params, $queries['insert'][$kk][$k3][0], $queries['insert'][$kk][$k3][1]);
+              call_user_func_array(array($db, 'q'), $params);
+            }
+          }
         }
       }
+    }
+    catch(Exception $e){
+      return -3;
     }
   }
   return 0;

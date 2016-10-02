@@ -1,6 +1,7 @@
 REPOSITORY=https://github.com/seishin77/wotan.git
 REPONAME=`git remote`
 BRANCH=`git branch|grep '*'|sed -e 's/^\s*\*\s*//g'`
+PATTERN=TODO
 
 EFLAGS="-e"
 
@@ -36,6 +37,12 @@ help:
 	@echo $(EFLAGS) "\tTo get the branches :"
 	@echo $(EFLAGS) "\t\tmake [branch | br]\n"
 
+	@echo $(EFLAGS) "\tTo search one pattern (default: TODO) :"
+	@echo $(EFLAGS) "\t\tmake [grep | gr] PATTERN=<pattern>\n"
+
+	@echo $(EFLAGS) "\tTo install dependencies (only one execution in general) :"
+	@echo $(EFLAGS) "\t\tmake install\n"
+
 
 	@echo $(EFLAGS) "\nVariables:"
 	@echo $(EFLAGS) "\tDEFAULT BRANCH\t\t= '$(BRANCH)'"
@@ -70,11 +77,18 @@ commit-all:
 fetch:
 	@git fetch $(REPONAME)
 
+grep:
+	@git grep $(PATTERN) | grep -v Makefile
+
 status:
 	@git status
 
 branch:
 	@git branch
+
+install:
+	@git clone https://github.com/PHPMailer/PHPMailer.git
+
 
 # Alias
 ci: commit
@@ -82,7 +96,7 @@ cia: commit-all
 co: checkout
 st: status
 br: branch
-
+gr: grep
 
 .PHONY: clean mrproper printvars
 

@@ -20,7 +20,7 @@
     <div class="form-group">
       <div class="col-lg-4">
         <label for="host" class="control-label">
-          <?php echo tr('SMTP SERVER');?> :
+          <?php echo tr('MAILSERVER');?> :
         </label>
       </div>
       <div class="col-lg-8">
@@ -32,7 +32,7 @@
     <div class="form-group">
       <div class="col-lg-4">
         <label for="port" class="control-label">
-          <?php echo tr('SMTP PORT');?> :
+          <?php echo tr('PORT');?> :
         </label>
       </div>
       <div class="col-lg-8">
@@ -55,12 +55,12 @@
   <div class="row">
     <div class="form-group">
       <div class="col-lg-4">
-        <label for="password" class="control-label">
+        <label for="pass" class="control-label">
           <?php echo tr('PASSWORD');?> :
         </label>
       </div>
       <div class="col-lg-8">
-        <input type="password" class="form-control" id="password" name="password">
+        <input type="password" class="form-control" id="pass" name="pass">
       </div>
     </div>
   </div>
