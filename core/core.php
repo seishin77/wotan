@@ -3,6 +3,8 @@
 class core{
 	public static $ppath = '';
 	public static $vpath = '';
+	public static $url = '';
+
 	public static $flash = array('nbflash' => 0,
 																'success' => array(),
 																'info' => array(),
@@ -14,6 +16,7 @@ class core{
 		self::$ppath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..') .
 							DIRECTORY_SEPARATOR;
 		self::$vpath = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+		self::$url = $_SERVER['HTTP_HOST'] . self::$vpath;
 	}
 
 	public static function getPPath(){
@@ -27,11 +30,11 @@ class core{
 	public static function vpath($p){
 		return self::getVPath() . $p;
 	}
-	
+
 	public static function path($p){
 		return self::getPPath() . $p;
 	}
-	
+
 	public static function basedir($p){
 		return DIRECTORY_SEPARATOR . str_replace(self::getPPath(), '', $p);
 	}
@@ -77,5 +80,9 @@ class core{
 			return password_verify($p, $h);
 
 		return hash_equals($h, crypt($p, $h));
+	}
+
+	public static function getUrl($path=''){
+		return '//' . self::$url . $path;
 	}
 }

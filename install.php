@@ -159,8 +159,8 @@ function wotan_create(){
   call_user_func_array(array($db, 'q'), $params);
 
   include 'core/mail.php';
-  $msg =  sprintf('Hi %s,<br/><br/>Now, you are an administrator of %s', $name, '');
-  mail::mail($email, tr('ADMINISTRATOR OF WOTAN SITE'), $msg);
+  $msg =  sprintf('Hi %s,<br/><br/>Now, you are an administrator of <a href="%s">a wotan site</a>', $name, 'http:' . core::getUrl());
+  mailer::mail($email, tr('ADMINISTRATOR OF WOTAN SITE'), $msg);
   return 0;
 }
 
@@ -202,13 +202,6 @@ define("SMTPTYPE","%s");
       fclose($fd);
     }
   }
-  require_once 'core/mail.php';
-  mailer::init();
-
-  if(mailer::mail('ykohler@gmail.com', 'Test é WOTAN', 'Test ' . date('Y-m-d H:i:s')))
-    core::addFlash(tr('MAIL SENT'));
-  else
-    core::addFlash(tr('MAIL UNSENT'));
 
   return 0;
 }

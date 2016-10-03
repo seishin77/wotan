@@ -13,6 +13,7 @@ if(!file_exists('./conf/db.conf') ||
   }
   require_once 'core/core.php';
   require_once 'core/tr.php';
+  core::init();
   include 'install.php';
 }
 else{

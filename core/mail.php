@@ -9,7 +9,7 @@ class mailer{
   private function __construct(){}
 
   public static function init(){
-    if(self::$init === false){
+    if(self::$_init === false){
       switch(SMTPTYPE){
       case 'SMTP':
         self::$_mailer = new PHPMailer;
