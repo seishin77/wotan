@@ -14,6 +14,13 @@ class dbm{
   }
 }
 
+/*
+i correspond à une variable de type entier
+d correspond à une variable de type nombre décimal
+s correspond à une variable de type chaîne de caractères
+b correspond à une variable de type BLOB, qui sera envoyé par paquets
+*/
+
 class db{
 
   var $hostname;

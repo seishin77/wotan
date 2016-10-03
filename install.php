@@ -160,7 +160,10 @@ function wotan_create(){
 
   include 'core/mail.php';
   $msg =  sprintf('Hi %s,<br/><br/>Now, you are an administrator of <a href="%s">a wotan site</a>', $name, 'http:' . core::getUrl());
-  mailer::mail($email, tr('ADMINISTRATOR OF WOTAN SITE'), $msg);
+  if(mailer::mail($email, tr('ADMINISTRATOR OF WOTAN SITE'), $msg))
+    core::addFlash(tr('EMAIL SENT'));
+  else
+    core::addFlash(tr('EMAIL UNSENT : ') . mailer::getError(), 'danger');
   return 0;
 }
 

@@ -15,7 +15,7 @@ class core{
 	public static function init(){
 		self::$ppath = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..') .
 							DIRECTORY_SEPARATOR;
-		self::$vpath = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+		self::$vpath = dirname($_SERVER['SCRIPT_NAME']) . '/';
 		self::$url = $_SERVER['HTTP_HOST'] . self::$vpath;
 	}
 
@@ -27,11 +27,11 @@ class core{
 		return self::$vpath;
 	}
 
-	public static function vpath($p){
+	public static function vpath($p=''){
 		return self::getVPath() . $p;
 	}
 
-	public static function path($p){
+	public static function path($p=''){
 		return self::getPPath() . $p;
 	}
 
@@ -84,5 +84,9 @@ class core{
 
 	public static function getUrl($path=''){
 		return '//' . self::$url . $path;
+	}
+
+	public static function redirect($path=''){
+		header('Location: ' . self::getUrl($path));	
 	}
 }

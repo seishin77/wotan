@@ -55,4 +55,8 @@ class mailer{
         return mail($to, $subject, $message, $headers);
     }
   }
+
+  public static function getError(){
+    return self::$_mailer->ErrorInfo;
+} 
 }

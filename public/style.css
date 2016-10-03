@@ -1,8 +1,8 @@
 body{
-  padding-top: 60px;
+  padding-top: 70px;
   margin-right:auto;
   margin-left: auto;
-  padding-bottom: 60px;
+  padding-bottom: 70px;
 }
 
 .navbar-fixed-bottom div.container{
@@ -13,4 +13,18 @@ body{
 .navbar-fixed-bottom div.container div{
   text-align: center;
   padding-top: 1.5rem;
+}
+
+#navbar .form-inline{
+	margin-top: 0.75rem;
+	font-size: 14px;
+}
+
+.navbar-form label{
+  margin-bottom: 0;
+}
+
+
+.white{
+	color:white;
 }

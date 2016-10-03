@@ -13,11 +13,20 @@ From Wikipedia :
 Wotan is the god of victory, knowledge and deads.
 
 
+## What do you need ?
+
+1. Apache with openssl
+2. MySQL
+3. git 
+4. make
+
 ## Installation
 
-1. Visit your site
-2. Configure
-3. Create or not a student class
-4. Create thematic categories and questions
-5. Invite students
+1. git clone https://github.com/seishin77/wotan.git (or download archive)
+2. make install
+3. Visit your site
+4. Configure
+5. Create or not a student class
+6. Create thematic categories and questions
+7. Invite students
 
