@@ -22,7 +22,7 @@ else{
   core::init();
 
   $db = dbm::getConnexion();
-  $db->query('SELECT * FROM user;');
+  $db->query('SELECT `id`, `name`, `email`, `__passwd`, `status` FROM user;');
 
   ob_start();
   include 'templates/flash.php';

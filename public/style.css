@@ -24,6 +24,15 @@ body{
   margin-bottom: 0;
 }
 
+.navbar-inverse .navbar-nav>li.w-label{
+    height: 50px;
+    display: block;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 1.5rem;
+    padding: 1.5rem 0 0 0;
+    color:#9d9d9d;
+}
 
 .white{
 	color:white;

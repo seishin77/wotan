@@ -20,8 +20,38 @@ if(class_exists('users')){
 <?php
   }
   else{
-    echo '<form class="navbar-form pull-right" method="post" action="logout.php"><label class="white">', tr('WELCOME'), ' ',
-      users::getName(), ' <button type="submit" class="btn btn-primary">', tr('LOGOUT'), '</button></label></form>';
+?>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="w-label"><?php echo tr('WELCOME'); ?></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo users::getName(); ?><span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#"><?php echo tr('MY PROFIL'); ?></a></li>
+              <li><a href="#"><?php echo tr('MY CLASSES'); ?></a></li>
+<?php
+if(users::isModerator()){
+?>
+              <li role="separator" class="divider"></li>
+              <li><a href="#"><?php echo tr('MODERATION'); ?></a></li>
+<?php
+  if(users::isAdmin()){
+?>
+              <li role="separator" class="divider"></li>
+              <li><a href="#"><?php echo tr('ADMINISTRATION'); ?></a></li>
+<?php  
+  }
+}
+?>
+<!--
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+-->
+              <li role="separator" class="divider"></li>
+              <li><a href="logout.php"><?php echo tr('LOGOUT'); ?></a></li>
+            </ul>
+          </li>
+        </ul>
+<?php
   }
 }
 ?>
