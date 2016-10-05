@@ -18,13 +18,10 @@
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded',
 	function(){
-
 		$('.alert')
 			.delay(2000)
 			.fadeOut(1000);
-
 	});
-
 </script>
 </body>
 </html>

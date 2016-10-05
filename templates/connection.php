@@ -48,6 +48,7 @@ if(users::isModerator()){
 -->
               <li role="separator" class="divider"></li>
               <li><a href="<?php echo core::getUrl('logout.php');?>"><?php echo tr('LOGOUT'); ?></a></li>
+              <form></form>
             </ul>
           </li>
         </ul>

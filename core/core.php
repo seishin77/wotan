@@ -1,5 +1,7 @@
 <?php
 
+require_once 'core/controller.php';
+
 class core{
 	public static $ppath = '';
 	public static $vpath = '';
@@ -141,6 +143,37 @@ class core{
 	}
 
 	public static function route(){
-
+		try{
+			$ctrl   = strtolower(self::$ruri['WCONTROLLER']) . 'Controller';
+			$action = strtolower(self::$ruri['WACTION']) . 'Action';
+			if(!file_exists('controllers/' . $ctrl .'.php'))
+				throw new Exception('CONTROLLER_NOT_FOUND');
+				
+			require_once 'controllers/' . $ctrl .'.php';
+			if(!method_exists($ctrl, $action))
+				throw new Exception('ACTION_NOT_FOUND');
+			$c = new $ctrl();
+			if($c->preAction()){
+				$c->$action();
+				$c->postAction();
+			}
+		}
+		catch(Exception $e){
+			switch($e->getMessage()){
+				case 'CONTROLLER_NOT_FOUND':
+					$content = tr('CONTROLLER NOT FOUND') . ' : ' . $ctrl;
+					break;
+				case 'ACTION_NOT_FOUND':
+					$content = tr('ACTION NOT FOUND') . ' : ' . $ctrl . '::' . $action;
+					break;
+				default:
+					$content = tr('UNKNOWN ERROR');
+					break;
+			}
+			$c = new Controller();
+			$c->error($content);
+		}
 	}
+
+
 }

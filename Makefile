@@ -43,6 +43,9 @@ help:
 	@echo $(EFLAGS) "\tTo install dependencies (only one execution in general) :"
 	@echo $(EFLAGS) "\t\tmake install\n"
 
+	@echo $(EFLAGS) "\tTo prepare internalization :"
+	@echo $(EFLAGS) "\t\ttranslator <codelang>\n"
+
 
 	@echo $(EFLAGS) "\nVariables:"
 	@echo $(EFLAGS) "\tDEFAULT BRANCH\t\t= '$(BRANCH)'"
@@ -89,7 +92,6 @@ branch:
 install:
 	@git clone https://github.com/PHPMailer/PHPMailer.git
 
-
 # Alias
 ci: commit
 cia: commit-all
@@ -97,6 +99,7 @@ co: checkout
 st: status
 br: branch
 gr: grep
+tr: translate
 
 .PHONY: clean mrproper printvars
 

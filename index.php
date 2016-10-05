@@ -25,5 +25,5 @@ else{
   require_once 'core/system.php';
 
   users::isConnected();
-  core::render();
+  core::route();
 }

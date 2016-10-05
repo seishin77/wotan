@@ -93,7 +93,7 @@ switch($step){
     $status = wotan_create();
     if($status === 0){
       core::addFlash(tr('ADMINISTRATOR CREATED'), 'success');
-      echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr(''), '</h1>';
+      echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr('END OF INSTALLATION'), '</h1>';
       include 'templates/flash.php';
       include 'templates/install/finish.php';
     }
@@ -110,7 +110,7 @@ switch($step){
   default:
     $content = tr('UNKNOWN INSTALLATION STEP');
     include 'templates/flash.php';
-    include 'templates/error.php';
+    include 'templates/install/error.php';
     break;
 }
 

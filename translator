@@ -1,0 +1,6 @@
+#! env bash 
+file=translations/$1.php
+echo '<?php' >$file
+git grep -E "[^a-zA-Z0-9_-]tr\('"|grep -v translator|sed -e "s/^.*tr('/translator::addTranslation('/g"|sed -e "s/').*$/', '');/g" | sort -u >>$file
+
+	echo ''>>$file

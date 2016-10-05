@@ -98,27 +98,27 @@ class users{
 	}
 
   public static function isAdmin(){
-    return $_SESSION['user']['status'] == 'ADMINISTRATOR';
+    return self::isConnected() && $_SESSION['user']['status'] == 'ADMINISTRATOR';
   }
 
   public static function isModerator(){
-    return $_SESSION['user']['status'] == 'MODERATOR' || $_SESSION['user']['status'] == 'ADMINISTRATOR';
+    return self::isConnected() && $_SESSION['user']['status'] == 'MODERATOR' || $_SESSION['user']['status'] == 'ADMINISTRATOR';
   }
 
   public static function isUser(){
-      return $_SESSION['user']['status'] == 'USER';
+    return self::isConnected() && $_SESSION['user']['status'] == 'USER';
   }
 
   public static function isTeacher($class=null){
     if(is_null($class))
-      return !empty($_SESSION['user']['class']['TEACHER']);
+      return self::isConnected() && !empty($_SESSION['user']['class']['TEACHER']);
 
     return isset($_SESSION['user']['class']['TEACHER'][$class]);
   }
 
   public static function isStudent($class=null){
     if(is_null($class))
-      return !empty($_SESSION['user']['class']['STUDENT']);
+      return self::isConnected() && !empty($_SESSION['user']['class']['STUDENT']);
 
     return isset($_SESSION['user']['class']['STUDENT'][$class]);
   }
