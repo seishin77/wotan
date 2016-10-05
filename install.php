@@ -1,10 +1,15 @@
+<?php
+if(!isset($_REQUEST['step'])){
+  include 'core/core.php';
+  core::init();
+  core::redirect();
+}
+?>
 <!-- begin <?php echo core::basedir(__FILE__);?> -->
 <?php
 
 if(!isset($_REQUEST['step']))
-  $step = 1;
-else
-  $step = $_REQUEST['step'];
+  core::redirect();
 
 $_SESSION['step'] = $step + 1;
 
@@ -34,7 +39,7 @@ switch($step){
   case 2:
     $status = wotan_dbconf();
     if($status === 0){
-      core::addFlash(tr('DATABASE CREATED'));
+      core::addFlash(tr('DATABASE CREATED'), 'success');
       echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr('MAIL CONFIGURATION'), '</h1>';
       include 'templates/flash.php';
       include 'templates/install/mailconf.php';
@@ -62,7 +67,7 @@ switch($step){
   case 3:
     $status = wotan_mailconf();
     if($status === 0){
-      core::addFlash(tr('MAIL CONFIGURED'));
+      core::addFlash(tr('MAIL CONFIGURED'), 'success');
       echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr('ADMINISTRATOR ACCOUNT CREATION'), '</h1>';
       include 'templates/flash.php';
       include 'templates/admin/create_user.php';
@@ -87,22 +92,24 @@ switch($step){
   case 4:
     $status = wotan_create();
     if($status === 0){
-      core::addFlash(tr('ADMINISTRATOR CREATED'));
+      core::addFlash(tr('ADMINISTRATOR CREATED'), 'success');
       echo '<h1>', tr('STEP'), ' ', $step, ' : ', tr(''), '</h1>';
       include 'templates/flash.php';
       include 'templates/install/finish.php';
     }
     else{
-      core::addFlash(tr('ADMINISTRATOR CREATION ERROR'));
+      core::addFlash(tr('ADMINISTRATOR CREATION ERROR'), 'danger');
       echo '<h1>', tr('STEP'), ' ', $step - 1, ' : ', tr('ADMINISTRATOR ACCOUNT CREATION'), '</h1>';
       include 'templates/flash.php';
       include 'templates/admin/create_user.php';
     }
     break;
   case 5:
-    break;
+    
+    // break;
   default:
     $content = tr('UNKNOWN INSTALLATION STEP');
+    include 'templates/flash.php';
     include 'templates/error.php';
     break;
 }
@@ -161,7 +168,7 @@ function wotan_create(){
   include 'core/mail.php';
   $msg =  sprintf('Hi %s,<br/><br/>Now, you are an administrator of <a href="%s">a wotan site</a>', $name, 'http:' . core::getUrl());
   if(mailer::mail($email, tr('ADMINISTRATOR OF WOTAN SITE'), $msg))
-    core::addFlash(tr('EMAIL SENT'));
+    core::addFlash(tr('EMAIL SENT'), 'success');
   else
     core::addFlash(tr('EMAIL UNSENT : ') . mailer::getError(), 'danger');
   return 0;

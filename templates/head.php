@@ -1,4 +1,3 @@
-<!doctype html>
 <!-- begin <?php echo core::basedir(__FILE__);?> -->
 <html lang="fr">
 <head>

@@ -1,7 +1,7 @@
 <!-- begin <?php echo core::basedir(__FILE__);?> -->
 <?php
 if(class_exists('users')){
-  if(!users::connected()){
+  if(!users::isConnected()){
 ?>
         <form class="navbar-form pull-right" method="post" action="connect.php">
             <div class="form-group">
@@ -47,7 +47,7 @@ if(users::isModerator()){
               <li><a href="#">Something else here</a></li>
 -->
               <li role="separator" class="divider"></li>
-              <li><a href="logout.php"><?php echo tr('LOGOUT'); ?></a></li>
+              <li><a href="<?php echo core::getUrl('logout.php');?>"><?php echo tr('LOGOUT'); ?></a></li>
             </ul>
           </li>
         </ul>

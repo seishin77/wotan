@@ -11,7 +11,7 @@ $queries = array(
             ),
   'create' => array(
                 0 => array(
-                  'class' => 'CREATE TABLE IF NOT EXISTS `class` (`id` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT, `name` varchar(255) COLLATE utf8_bin NOT NULL, `description` text COLLATE utf8_bin NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `name` (`name`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin;',
+                  'class' => 'CREATE TABLE IF NOT EXISTS `class` (`id` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT, `name` varchar(255) COLLATE utf8_bin NOT NULL, `description` text COLLATE utf8_bin NOT NULL, `type` enum(\'CLOSED\',\'PUBLIC\',\'APPROVED\',\'PRIVATE\') COLLATE utf8_bin NOT NULL DEFAULT \'CLOSED\', `seats` mediumint(8) unsigned NOT NULL DEFAULT \'30\', `students` mediumint(8) unsigned NOT NULL DEFAULT \'0\', PRIMARY KEY (`id`), UNIQUE KEY `name` (`name`), KEY `type` (`type`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin;',
                   'user'  => 'CREATE TABLE IF NOT EXISTS `user` (`id` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT,`name` varchar(255) COLLATE utf8_bin NOT NULL,`email` varchar(255) COLLATE utf8_bin NOT NULL,`__passwd` varchar(255) COLLATE utf8_bin NOT NULL,`status` enum(\'USER\',\'MODERATOR\',\'ADMINISTRATOR\') COLLATE utf8_bin DEFAULT \'USER\',`token` varchar(255) COLLATE utf8_bin DEFAULT \'\', `tokendate` datetime NULL, PRIMARY KEY (`id`), UNIQUE KEY `name` (`name`), UNIQUE KEY `email` (`email`), KEY `status` (`status`), KEY `token` (`token`), KEY `tokendate` (`tokendate`)) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin;',
                 ),
                 1 => array(

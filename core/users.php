@@ -60,12 +60,13 @@ class users{
 	}
 
 	public static function logout(){
-		unset($_SESSION['user']);
+    $_SESSION = array();
+    setcookie(session_name(), '', 0);
     setcookie('wotan-tok', '', 0);
     setcookie('wotan-id',  '', 0);
 	}
 
-	public static function connected(){
+  public static function isConnected(){
     if(isset($_SESSION['user']) && isset($_SESSION['user']['name']))
       return true;
     
@@ -80,6 +81,7 @@ class users{
     if(!is_null($r)){
       self::connect($r);
       self::setIdCookie();
+      core::addFlash(tr('I remember you'), 'info');
       return true;
     }
     else{
@@ -104,7 +106,7 @@ class users{
   }
 
   public static function isUser(){
-    return $_SESSION['user']['status'] == 'USER';
+      return $_SESSION['user']['status'] == 'USER';
   }
 
   public static function isTeacher($class=null){

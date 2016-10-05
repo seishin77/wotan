@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once 'core/core.php';
+core::init();
 
 if(!file_exists('./conf/db.conf') ||
       isset($_REQUEST['force']) ||
@@ -11,35 +12,18 @@ if(!file_exists('./conf/db.conf') ||
     @unlink('conf/db.conf');
     @unlink('conf/mail.conf');
   }
-  require_once 'core/core.php';
+
+  if(!isset($_REQUEST['step']))
+    $step = 1;
+  else
+    $step = $_REQUEST['step'];
+
   require_once 'core/tr.php';
-  core::init();
   include 'install.php';
 }
 else{
   require_once 'core/system.php';
 
-  core::init();
-
-  $db = dbm::getConnexion();
-  $db->query('SELECT `id`, `name`, `email`, `__passwd`, `status` FROM user;');
-
-  ob_start();
-  include 'templates/flash.php';
-  
-  $db->print_table();
-
-  if(isset($_REQUEST['debug'])){
-    echo '<pre>';
-    echo '_REQUEST', PHP_EOL;
-    print_r($_REQUEST);
-    echo '_SESSION', PHP_EOL;
-    print_r($_SESSION);
-    echo '_SERVER', PHP_EOL;
-    print_r($_SERVER);
-    echo '</pre>';
-  }
-  $content = ob_get_clean();
-
-  include 'templates/main.php';
+  users::isConnected();
+  core::render();
 }
